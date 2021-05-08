@@ -30,7 +30,7 @@ shared library, which provides lower level JTAG-related functions.
 
 * Use some variation of the script below:
 
-    ```python
+```python
 import intel_jtag_uart
 
 try:
@@ -42,21 +42,27 @@ except Exception as e:
 
 ju.write(b'r')
 time.sleep(1)
-print("read            : ", ju.read())
-    ```
+print("read: ", ju.read())
+```
 
-    The script above sends `r` to the JTAG UART, waits 1 seconds for a reply, and reads the
-    reply, if there is any.
+The script above sends `r` to the JTAG UART, waits 1 seconds for a reply, and reads the
+reply, if there is any.
 
-# Full List of Functions
+# Full List of Functions/Methods
 
-Use the source, Luke!
+Use [the source](https://github.com/tomverbeure/intel_jtag_uart/blob/main/src/intel_jtag_uart/intel_jtag_uart.py), Luke!
 
-This module is a very thin wrapper around a handful of function calls that are self-explanatory.
+This module is a very thin wrapper around a handful of function calls that are mostly self-explanatory.
 
 ## Bug Reports/Comments/Questions
 
 Bug reports, comments, or questions can be entered through [the GitHub issue tracker](https://github.com/tomverbeure/intel_jtag_uart/issues)
 for this project.
+
+# References
+
+* [The Intel JTAG UART - Add a Serial Console to Your Design without Extra IO Pins](https://tomverbeure.github.io/2021/05/02/Intel-JTAG-UART.html)
+* [Write Your Own C and Python Clients for the Intel JTAG UART](https://tomverbeure.github.io/2021/05/08/Write-Your-Own-C-and-Python-Clients-for-Intel-JTAG-UART-with-libjtag_atlantic.html)
+* [`jtag_uart_example` project](https://github.com/tomverbeure/jtag_uart_example)
 
 

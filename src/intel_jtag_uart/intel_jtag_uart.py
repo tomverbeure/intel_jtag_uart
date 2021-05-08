@@ -60,6 +60,8 @@ libjtag_atlantic = load_shared_library(libjtag_atlantic_filename)
 
 class intel_jtag_uart:
 
+    # The error strings below were copied from following MIT-licensed file:
+    # https://github.com/thotypous/alterajtaguart/blob/master/software/jtag_atlantic.h
     ERROR_MSGS = [
         "No error",
         "Unable to connect to local JTAG server",
@@ -163,10 +165,20 @@ class intel_jtag_uart:
             func_ptr.restype    = func_info['restype']
             func_info['ptr']    = func_ptr
 
+    def __init__(self, cable_name = None, device_nr = -1, instance_nr = -1):
+        """Open a connection to a JTAG UART.
 
-    def __init__(self, cable_name = None, device_nr = -1, instance_nr = -1, exe_name = None):
+        cable_name:   name of the JTAG cable that is used to control the FPGA with the JTAG UART.
+                      When there is only 1 cable, this argument can be omitted.
+        device_nr:    number of the device that is connected to the JTAG cable.
+                      When there is only 1 device, this argument can be omitted.
+        instance_nr:  number of the JTAG UART instance that is embedded in the device.
+                      When there is only 1 JTAG UART in the device, this argument can be omitted.
 
-        self.exe_name   = exe_name
+        When a link can't be opened, this method throws an exception.
+        """
+
+        self.exe_name   = None
 
         if cable_name is None:
             cable_name_b    = None
@@ -183,6 +195,11 @@ class intel_jtag_uart:
             raise Exception(err_str)
 
     def open(self, cable_name, device_nr, instance_nr, exe_name):
+        """Open a connection with the JTAG UART.
+
+        This function is called by __init__(). Under normal circumstanced, 
+        there is no need to call it.
+        """
 
         handle = intel_jtag_uart.function_table['jtagatlantic_open']['ptr'](
                         ctypes.c_char_p(cable_name), 
@@ -194,17 +211,35 @@ class intel_jtag_uart:
         return handle
 
     def close(self):
+        """Close the connection with the JTAG UART."""
+
         intel_jtag_uart.function_table['jtagatlantic_close']['ptr'](
                             self.handle
                         )
 
     def get_error_nr(self):
+        """Get the integer value of the last error.
+        
+        The error code:
+        -1 Unable to connect to local JTAG server.
+        -2 More than one cable available, provide more specific cable name.
+        -3 Cable not available
+        -4 Selected cable is not plugged.
+        -5 JTAG not connected to board, or board powered down.
+        -6 Another program (progname) is already using the UART.
+        -7 More than one UART available, specify device/instance.
+        -8 No UART matching the specified device/instance.
+        -9 Selected UART is not compatible with this version of the library.
+        """
+
         other_info = ctypes.c_char_p()
         err = intel_jtag_uart.function_table['jtagatlantic_get_error']['ptr'](ctypes.byref(other_info))
 
         return err
 
     def get_error_msg(self):
+        """Return the string of the last error."""
+
         err = self.get_error_nr()
         if err >= -9 and err <= 0:
             return intel_jtag_uart.ERROR_MSGS[-err]
@@ -212,6 +247,14 @@ class intel_jtag_uart:
         return None
 
     def get_info(self):
+        """Return information of the JTAG UART connection.
+        
+        Returns a list with:
+        * cable name
+        * device number
+        * instance number
+        """
+
         cable_name  = ctypes.c_char_p()
         device_nr   = ctypes.c_int()
         instance_nr = ctypes.c_int()
@@ -226,6 +269,15 @@ class intel_jtag_uart:
         return [cable_name.value.decode("utf-8"), device_nr.value, instance_nr.value ]
 
     def write(self, data_bytes, flush = True):
+        """Write the contents of a given bytes() object to the JTAG UART.
+
+        Arguments: 
+        data_bytes : a Python bytes object
+        flush      : when True, immediately transmit the data to the JTAG UART. (default = True)
+
+        Raises an exception when the connection with the JTAG UART is broken.
+        """
+
         bytes_written = intel_jtag_uart.function_table['jtagatlantic_write']['ptr'](
                             self.handle,
                             ctypes.c_char_p(data_bytes),
@@ -239,6 +291,12 @@ class intel_jtag_uart:
             self.flush()
 
     def read(self):
+        """Read from the JTAG UART.
+
+        Returns a bytes object.
+
+        Raises an exception when the connection with the JTAG UART is broken.
+        """
         buf_len     = self.bytes_available()
         buf         = bytes(buf_len)
 
@@ -254,37 +312,47 @@ class intel_jtag_uart:
         return buf
 
     def flush(self):
+        """Send all data that was queued up by the write() command to the JTAG UART."""
         intel_jtag_uart.function_table['jtagatlantic_flush']['ptr'](
                             self.handle
                         )
 
     def bytes_available(self):
+        """Number of bytes that were fetched from the JTAG UART and waiting to be read."""
         nr_bytes = intel_jtag_uart.function_table['jtagatlantic_bytes_available']['ptr'](
                             self.handle
                         )
         return nr_bytes
 
     def cable_warning(self):
+        """Check if the given JTAG cable supports JTAG UART transfers."""
         status = intel_jtag_uart.function_table['jtagatlantic_cable_warning']['ptr'](
                             self.handle
                         )
         return status != 0
 
     def is_setup_done(self):
+        """Check if JTAG UART setup is complete.
+
+        When transactions with the JTAG UART are requested before the setup is complete,
+        the transactions will be stalled until ready.
+
+        In most circumstances, calling this function is not needed.
+        """
         status = intel_jtag_uart.function_table['jtagatlantic_is_setup_done']['ptr'](
                             self.handle
                         )
         return status != 0
 
-    # NOTE: I've never seen this return a value other than 0
     def wait_open(self):
+        """Unknown functionality. Included for completeness."""
         status = intel_jtag_uart.function_table['jtagatlantic_wait_open']['ptr'](
                             self.handle
                         )
         return status
 
-    # NOTE: implemented for completeness. Use case unknown.
     def scan_thread(self):
+        """Unknown functionality. Included for completeness."""
         status = intel_jtag_uart.function_table['jtagatlantic_scan_thread']['ptr'](
                             self.handle
                         )

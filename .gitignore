@@ -1,1 +1,4 @@
 .*.sw*
+dist/
+build/
+*.egg-info
