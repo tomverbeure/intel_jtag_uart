@@ -1,7 +1,5 @@
 # INTEL JTAG UART
 
-## Introduction
-
 `intel_jtag_uart` is a Python module that can be used to interact the JTAG UART instances inside
 Intel FPGA designs.
 
@@ -48,7 +46,7 @@ print("read: ", ju.read())
 The script above sends `r` to the JTAG UART, waits 1 seconds for a reply, and reads the
 reply, if there is any.
 
-# Full List of Functions/Methods
+## Full List of Functions/Methods
 
 Use [the source](https://github.com/tomverbeure/intel_jtag_uart/blob/main/src/intel_jtag_uart/intel_jtag_uart.py), Luke!
 
@@ -59,7 +57,7 @@ This module is a very thin wrapper around a handful of function calls that are m
 Bug reports, comments, or questions can be entered through [the GitHub issue tracker](https://github.com/tomverbeure/intel_jtag_uart/issues)
 for this project.
 
-# References
+## References
 
 * [The Intel JTAG UART - Add a Serial Console to Your Design without Extra IO Pins](https://tomverbeure.github.io/2021/05/02/Intel-JTAG-UART.html)
 * [Write Your Own C and Python Clients for the Intel JTAG UART](https://tomverbeure.github.io/2021/05/08/Write-Your-Own-C-and-Python-Clients-for-Intel-JTAG-UART-with-libjtag_atlantic.html)
