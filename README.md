@@ -65,5 +65,6 @@ of this project.
 * [The Intel JTAG UART - Add a Serial Console to Your Design without Extra IO Pins](https://tomverbeure.github.io/2021/05/02/Intel-JTAG-UART.html)
 * [Write Your Own C and Python Clients for the Intel JTAG UART](https://tomverbeure.github.io/2021/05/08/Write-Your-Own-C-and-Python-Clients-for-Intel-JTAG-UART-with-libjtag_atlantic.html)
 * [`jtag_uart_example` project](https://github.com/tomverbeure/jtag_uart_example)
+* [intel-jtag-uart on pypi.org](https://pypi.org/project/intel-jtag-uart/)
 
 
