@@ -6,7 +6,7 @@ The official ways to do this are either interactively, through `nios2-terminal` 
 or by scripting some TCL code inside the Quartus System Console. There is no official 
 straightforward way to interact with a JTAG UART with Python. 
 
-This module is a wrapper around the `jtag_atlantic` shared librarie/DLL that is part of any
+This module is a wrapper around the `jtag_atlantic` shared library/DLL that is part of any
 modern Quartus installation. (`jtag_atlantic` is the internal code name for the JTAG UART.)
 
 To use this module, you need access to the `jtag_atlantic` shared library as well as the `jtag_client`
@@ -25,7 +25,7 @@ shared library, which provides lower level JTAG-related functions.
        the directories of the `$LD_LIBRARY_PATH` environment variable.) 
     1. Look in the `$QUARTUS_ROOTDIR` directory
 
-    Most default Quartus installation will have `$QUARTUS_ROOTDIR` environment variable
+    Most default Quartus installations will have `$QUARTUS_ROOTDIR` environment variable
     set to the correct directory, so everything should just work&trade;.
 
 * Use some variation of the script below:
